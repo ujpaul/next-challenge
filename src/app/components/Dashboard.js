@@ -3,99 +3,42 @@ import CustomerList from "./CustomerList";
 import { RiLogoutCircleLine } from "react-icons/ri";
 import { Tooltip } from "react-tooltip";
 import Link from "next/link";
-// Fetch data directly in the component
+import { useQuery } from "@tanstack/react-query";
 export default function Dashboard() {
   // Fetch the data from the Mockaroo API
-  // async function fetchCustomers() {
-  //   const res = await fetch(
-  //     "https://my.api.mockaroo.com/website-visits?key=2c530ee0"
-  //   );
-  //   if (!res.ok) console.log("Failed to fetch data");
-  //   return res.json();
-  // }
+  async function fetchVisitors() {
+    const res = await fetch(
+      "https://my.api.mockaroo.com/website-visits?key=2c530ee0"
+    );
+    if (!res.ok) console.log("Failed to fetch data");
+    return res.json();
+  }
 
-  // const { data, error, isLoading } = useQuery({
-  //   queryKey: ["customers"],
-  //   queryFn: fetchCustomers,
-  //   staleTime: 1000 * 60 * 5, // Cache data for 5 minutes
-  // });
-  const data = [
-    {
-      pageViews: 78,
-      uniqueVisitors: 38,
-      bounceRate: 82,
-      sessionDuration: 94,
-    },
-    {
-      pageViews: 100,
-      uniqueVisitors: 96,
-      bounceRate: 92,
-      sessionDuration: 17,
-    },
-    {
-      pageViews: 91,
-      uniqueVisitors: 33,
-      bounceRate: 46,
-      sessionDuration: 14,
-    },
-    {
-      pageViews: 72,
-      uniqueVisitors: 77,
-      bounceRate: 45,
-      sessionDuration: 67,
-    },
-    {
-      pageViews: 2,
-      uniqueVisitors: 13,
-      bounceRate: 55,
-      sessionDuration: 58,
-    },
-    {
-      pageViews: 26,
-      uniqueVisitors: 31,
-      bounceRate: 40,
-      sessionDuration: 71,
-    },
-    {
-      pageViews: 5,
-      uniqueVisitors: 40,
-      bounceRate: 22,
-      sessionDuration: 57,
-    },
-    {
-      pageViews: 9,
-      uniqueVisitors: 29,
-      bounceRate: 12,
-      sessionDuration: 19,
-    },
-    {
-      pageViews: 17,
-      uniqueVisitors: 43,
-      bounceRate: 52,
-      sessionDuration: 17,
-    },
-    {
-      pageViews: 80,
-      uniqueVisitors: 55,
-      bounceRate: 12,
-      sessionDuration: 89,
-    },
-    {
-      pageViews: 6,
-      uniqueVisitors: 11,
-      bounceRate: 80,
-      sessionDuration: 34,
-    },
-  ];
+  const { data, error, isLoading } = useQuery({
+    queryKey: ["visits"],
+    queryFn: fetchVisitors,
+    staleTime: 1000 * 60 * 5, // Cache data for 5 minutes
+  });
   // Aggregate the data (assuming it has the same structure as in the previous example)
-  const totalVisitors = data.reduce((sum, day) => sum + day.uniqueVisitors, 0);
+  const totalVisitors = data?.reduce((sum, day) => sum + day.uniqueVisitors, 0);
   const avgBounceRate = (
-    data.reduce((sum, day) => sum + day.bounceRate, 0) / data.length
+    data?.reduce((sum, day) => sum + day.bounceRate, 0) / data.length
   ).toFixed(2);
   const avgSessionDuration = (
-    data.reduce((sum, day) => sum + day.sessionDuration, 0) / data.length
+    data?.reduce((sum, day) => sum + day.sessionDuration, 0) / data.length
   ).toFixed(2);
 
+  if (isLoading)
+    return (
+      <div className='flex justify-center items-center h-screen'>
+        <h3>Loading...</h3>
+      </div>
+    );
+  if (error) return (
+    <div className='flex justify-center items-center h-screen'>
+      <h3>Error: {error.message}</h3>
+    </div>
+  );
   return (
     <div className='p-4'>
       <div className='flex justify-between'>
