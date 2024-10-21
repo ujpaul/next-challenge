@@ -25,7 +25,7 @@ Follow these steps to set up and run the project locally.
 git clone https://github.com/your-username/your-repository-name.git
 cd your-repository-name
 npm install
-## NEXTAUTH Configuration
+## NEXTAUTH Configuration in .env.local file
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your-nextauth-secret
 
